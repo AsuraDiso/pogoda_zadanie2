@@ -55,14 +55,14 @@ jobs:
           cache-to: type=registry,ref=ghcr.io/asuradiso/cache:buildcache,mode=max
           push: true
           tags: |
-            ghcr.io/asuradiso/pogoda_zad2:sha-${{ steps.sha.outputs.val }}
-            ghcr.io/asuradiso/pogoda_zad2:latest
+            ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
+            ghcr.io/asuradiso/pogoda_zadanie2:latest
 
       # Trivy - skanowanie podatności
       - name: Trivy - skan bezpieczeństwa
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ghcr.io/asuradiso/pogoda_zad2:sha-${{ steps.sha.outputs.val }}
+          image-ref: ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
           scan-type: image
           severity: HIGH,CRITICAL
           exit-code: 1
