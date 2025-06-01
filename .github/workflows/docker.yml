@@ -64,5 +64,5 @@ jobs:
         with:
           image-ref: ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
           scan-type: image
-          severity: CRITICAL
+          severity: HIGH, CRITICAL
           exit-code: 1
