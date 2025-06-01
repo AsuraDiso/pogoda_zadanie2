@@ -12,40 +12,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
+      # Pobieranie kodu źródłowego
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Set up QEMU for ARM support
-      - name: Setup QEMU
+      # Włączenie wsparcia dla architektur ARM
+      - name: Emulacja QEMU
         uses: docker/setup-qemu-action@v3
 
-      # Configure Buildx
-      - name: Setup Buildx
+      # Ustawienie narzędzia Buildx
+      - name: Konfiguracja buildx
         uses: docker/setup-buildx-action@v3
         with:
           install: true
 
-      # Login to DockerHub (for cache)
-      - name: Login to DockerHub
+      # Logowanie do DockerHub, tylko do cache
+      - name: Logowanie do DockerHub
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      # Login to GHCR
-      - name: Login to GHCR
+      # Logowanie do GHCR (GitHub Container Registry)
+      - name: Logowanie GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
-      # Get short SHA for tagging
-      - name: Get short SHA
+      # Skrócony hash commita do tagowania obrazu
+      - name: Skróć SHA
         id: sha
         run: echo "val=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      # Build and push with cache busting
-      - name: Build and push image
+      # Budowanie i wysyłanie obrazu
+      - name: Build i wypchnij obraz
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -54,19 +54,15 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/asuradiso/cache:buildcache
           cache-to: type=registry,ref=ghcr.io/asuradiso/cache:buildcache,mode=max
           push: true
-          build-args: |
-            NODE_ENV=production
           tags: |
             ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
             ghcr.io/asuradiso/pogoda_zadanie2:latest
-          no-cache: true  # Force fresh build
 
-      # Trivy scan with vulnerability exceptions
-      - name: Trivy security scan
+      # Trivy - skanowanie podatności
+      - name: Trivy - skan bezpieczeństwa
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
           scan-type: image
-          severity: HIGH,CRITICAL
+          severity: CRITICAL
           exit-code: 1
-          format: table
