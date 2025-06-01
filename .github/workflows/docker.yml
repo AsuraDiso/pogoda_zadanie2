@@ -60,7 +60,7 @@ jobs:
 
       # Trivy - skanowanie podatności
       - name: Trivy - skan bezpieczeństwa
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: ghcr.io/asuradiso/pogoda_zadanie2:sha-${{ steps.sha.outputs.val }}
           scan-type: image
