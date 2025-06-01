@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Pogoda - Formularz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e9ecef;
+            margin: 0;
+            padding: 0;
+        }
+        .main {
+            width: 350px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 24px 20px 18px 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+        select, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 14px;
+            border-radius: 4px;
+            border: 1px solid #bbb;
+            font-size: 1em;
+        }
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h2>Sprawdź pogodę</h2>
+        <form action="/weather" method="POST">
+            <label for="country">Kraj:</label>
+            <select name="country" id="country" required>
+                <option value="" disabled selected>Wybierz kraj</option>
+                <% Object.keys(countriesCities).forEach(function(country) { %>
+                    <option value="<%= country %>"><%= country.replace(/([A-Z])/g, ' $1').trim() %></option>
+                <% }); %>
+            </select>
+
+            <label for="city">Miasto:</label>
+            <select name="city" id="city" required>
+                <option value="" disabled selected>Wybierz miasto</option>
+            </select>
+
+            <button type="submit">Pokaż pogodę</button>
+        </form>
+    </div>
+    <script>
+        const countriesCities = <%- JSON.stringify(countriesCities) %>;
+
+        const countrySelect = document.getElementById('country');
+        const citySelect = document.getElementById('city');
+
+        function updateCities() {
+            const selectedCountry = countrySelect.value;
+            citySelect.innerHTML = '<option value="" disabled selected>Wybierz miasto</option>';
+            if (selectedCountry && countriesCities[selectedCountry]) {
+                countriesCities[selectedCountry].forEach(function(city) {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySelect.appendChild(opt);
+                });
+            }
+        }
+
+        countrySelect.addEventListener('change', updateCities);
+        if (countrySelect.value) updateCities();
+    </script>
+</body>
+</html> 
