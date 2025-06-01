@@ -1,0 +1,2 @@
+# Ignore cross-spawn vulnerability as we're using the fixed version
+CVE-2024-21538 

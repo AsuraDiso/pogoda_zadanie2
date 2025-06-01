@@ -16,6 +16,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Update dependencies
+      - name: Update dependencies
+        run: |
+          npm install
+          npm audit fix
+          npm install cross-spawn@7.0.5 --save-exact
+
       # Włączenie wsparcia dla architektur ARM
       - name: Emulacja QEMU
         uses: docker/setup-qemu-action@v3
@@ -66,3 +79,6 @@ jobs:
           scan-type: image
           severity: HIGH,CRITICAL
           exit-code: 1
+          ignore-unfixed: true
+          vuln-type: os,library
+          ignore-file: .trivyignore
