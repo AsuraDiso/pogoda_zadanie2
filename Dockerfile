@@ -2,7 +2,10 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
+# Delete old lockfile to prevent caching issues
+RUN rm -f package-lock.json
+# Install with --no-cache and force correct version
+RUN npm install --production --no-cache
 
 # Stage 2: Final image
 FROM node:20-alpine
